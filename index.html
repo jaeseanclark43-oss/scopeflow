@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScopeFlow // Interactive Business Requirements Builder</title>
+  <meta name="description" content="An interactive, beautiful, multi-step builder that helps you define, refine, and export clean Business Requirements Documents (BRD).">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background decorative glows -->
+  <div class="glow-sphere glow-sphere-1"></div>
+  <div class="glow-sphere glow-sphere-2"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span>Scope<span>Flow</span></span>
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="btn-icon" aria-label="Toggle light/dark theme" title="Toggle theme">
+          <!-- Sun Icon -->
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <!-- Moon Icon -->
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+        <button id="reset-btn" class="btn btn-outline-danger" title="Clear all and start over">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Progress Bar Container -->
+  <div class="stepper-outer">
+    <div class="stepper-container">
+      <div class="stepper-progress-bar">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+      <div class="step-nodes">
+        <button class="step-node active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Business</span>
+        </button>
+        <button class="step-node" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Functional</span>
+        </button>
+        <button class="step-node" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Design</span>
+        </button>
+        <button class="step-node" data-step="4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Success</span>
+        </button>
+        <button class="step-node" data-step="5">
+          <div class="step-circle">5</div>
+          <span class="step-label">Summary</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <form id="brd-form" autocomplete="off" onsubmit="event.preventDefault();">
+      
+      <!-- STEP 1: Business Requirements -->
+      <section class="step-panel active" id="step-panel-1">
+        <div class="panel-header">
+          <div class="panel-badge">Step 1 of 5</div>
+          <h2>Business Requirements</h2>
+          <p class="panel-sub">Define the problems your project aims to address and describe your vision and primary goals.</p>
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label for="project-title">Project Name <span class="required">*</span></label>
+            <span class="input-helper">Keep it concise and punchy</span>
+          </div>
+          <input type="text" id="project-title" name="projectTitle" placeholder="e.g., Nexus E-Commerce Engine, TaskMaster Pro">
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label for="problem-statement">The Problem Statement <span class="required">*</span></label>
+            <span class="input-helper">What pain points or gaps exist? Who experiences them?</span>
+          </div>
+          <textarea id="problem-statement" name="problemStatement" rows="5" placeholder="Describe the current state, what is broken, and why it matters. E.g., 'Small businesses struggle to manage custom orders on spreadsheet logs, leading to 15% delayed deliveries...'"></textarea>
+          <div class="character-counter"><span id="problem-char-count">0</span> / 1000 characters</div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label for="business-goals">Goals & Objectives <span class="required">*</span></label>
+            <span class="input-helper">What are the key goals this project intends to achieve?</span>
+          </div>
+          <textarea id="business-goals" name="businessGoals" rows="5" placeholder="Specify desired business outcomes. E.g., 'Provide a consolidated real-time order dashboard. Reduce delivery delays below 2%. Automate customer confirmation notifications...'"></textarea>
+          <div class="character-counter"><span id="goals-char-count">0</span> / 1000 characters</div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label for="target-audience">Target Audience</label>
+            <span class="input-helper">Who will utilize or benefit from this product?</span>
+          </div>
+          <input type="text" id="target-audience" name="targetAudience" placeholder="e.g., Operational Managers, SMB owners, customer support agents">
+        </div>
+      </section>
+
+      <!-- STEP 2: Functional Requirements -->
+      <section class="step-panel" id="step-panel-2">
+        <div class="panel-header">
+          <div class="panel-badge">Step 2 of 5</div>
+          <h2>Functional Requirements</h2>
+          <p class="panel-sub">List the core features, system functions, and specific actions users must be able to perform.</p>
+        </div>
+
+        <!-- Features Builder -->
+        <div class="builder-section">
+          <div class="builder-title-row">
+            <div>
+              <h3>Key Features</h3>
+              <p class="builder-subtitle">Define the critical functional capabilities of the system.</p>
+            </div>
+          </div>
+          
+          <div class="inline-add-row card-glass">
+            <div class="input-col-main">
+              <input type="text" id="feature-title-input" placeholder="Feature name (e.g., User Authentication, Export System)">
+              <input type="text" id="feature-desc-input" placeholder="Brief description of how it works...">
+            </div>
+            <div class="input-col-side">
+              <select id="feature-priority-input">
+                <option value="Must Have">Must Have (Critical)</option>
+                <option value="Should Have">Should Have (Important)</option>
+                <option value="Could Have">Could Have (Optional)</option>
+              </select>
+              <button type="button" id="add-feature-btn" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Add
+              </button>
+            </div>
+          </div>
+          <div id="features-list-error" class="validation-error-text" style="display: none;">Please add at least one feature.</div>
+
+          <div class="list-display-container" id="features-display-list">
+            <!-- Dynamically populated feature cards -->
+            <div class="empty-state-list">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+              <span>No features added yet. Add your first feature above!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Actions / Use Cases Builder -->
+        <div class="builder-section">
+          <div class="builder-title-row">
+            <div>
+              <h3>User Actions</h3>
+              <p class="builder-subtitle">Describe concrete actions actors can perform in the application.</p>
+            </div>
+          </div>
+
+          <div class="inline-add-row card-glass">
+            <div class="input-col-main">
+              <input type="text" id="action-actor-input" placeholder="Who? (e.g., Manager, Customer, Guest)" class="input-small-width">
+              <input type="text" id="action-behavior-input" placeholder="Can do what? (e.g., upload order CSV, request password reset)">
+            </div>
+            <div class="input-col-side-single">
+              <button type="button" id="add-action-btn" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Add Action
+              </button>
+            </div>
+          </div>
+          <div id="actions-list-error" class="validation-error-text" style="display: none;">Please add at least one user action.</div>
+
+          <div class="list-display-container" id="actions-display-list">
+            <!-- Dynamically populated actions -->
+            <div class="empty-state-list">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>No user actions added yet. Describe an action above!</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3: Design Requirements -->
+      <section class="step-panel" id="step-panel-3">
+        <div class="panel-header">
+          <div class="panel-badge">Step 3 of 5</div>
+          <h2>Design & Visual Requirements</h2>
+          <p class="panel-sub">Select the look and feel, color theme, and outline the principal screens or pages of the system.</p>
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label>Aesthetic Theme / Vibe <span class="required">*</span></label>
+            <span class="input-helper">Select the core design philosophy for your project UI</span>
+          </div>
+
+          <div class="theme-preset-grid">
+            <label class="theme-preset-card">
+              <input type="radio" name="designTheme" value="Modern Tech" checked>
+              <div class="preset-content">
+                <div class="preset-title">Modern Tech</div>
+                <div class="preset-desc">Sleek dark aesthetics, high-contrast blues and purples, clean geometry.</div>
+                <div class="preset-palette">
+                  <span class="color-dot" style="background-color: #0f172a;"></span>
+                  <span class="color-dot" style="background-color: #3b82f6;"></span>
+                  <span class="color-dot" style="background-color: #8b5cf6;"></span>
+                </div>
+              </div>
+            </label>
+
+            <label class="theme-preset-card">
+              <input type="radio" name="designTheme" value="Clean Enterprise">
+              <div class="preset-content">
+                <div class="preset-title">Clean Enterprise</div>
+                <div class="preset-desc">Trustworthy, accessible, light slate and professional royal navy blues.</div>
+                <div class="preset-palette">
+                  <span class="color-dot" style="background-color: #f8fafc;"></span>
+                  <span class="color-dot" style="background-color: #0f172a;"></span>
+                  <span class="color-dot" style="background-color: #0284c7;"></span>
+                </div>
+              </div>
+            </label>
+
+            <label class="theme-preset-card">
+              <input type="radio" name="designTheme" value="Creative & Playful">
+              <div class="preset-content">
+                <div class="preset-title">Creative & Playful</div>
+                <div class="preset-desc">Vibrant shades of amber, emerald, and warm corals, rounded organic shapes.</div>
+                <div class="preset-palette">
+                  <span class="color-dot" style="background-color: #fdf2f8;"></span>
+                  <span class="color-dot" style="background-color: #ec4899;"></span>
+                  <span class="color-dot" style="background-color: #f59e0b;"></span>
+                </div>
+              </div>
+            </label>
+
+            <label class="theme-preset-card">
+              <input type="radio" name="designTheme" value="Minimal Stark">
+              <div class="preset-content">
+                <div class="preset-title">Minimal Stark</div>
+                <div class="preset-desc">High focus on typography, monochrome shades of ink black and pure white.</div>
+                <div class="preset-palette">
+                  <span class="color-dot" style="background-color: #ffffff;"></span>
+                  <span class="color-dot" style="background-color: #000000;"></span>
+                  <span class="color-dot" style="background-color: #71717a;"></span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label for="look-feel-description">Design Narrative <span class="required">*</span></label>
+            <span class="input-helper">Describe the look, feel, user flow, or accessibility directives.</span>
+          </div>
+          <textarea id="look-feel-description" name="lookFeelDescription" rows="3" placeholder="E.g., 'The interface must look clean and modern with glassmorphic cards, large margins, and highly legible typography for older workers. Mobile responsiveness is paramount...'"></textarea>
+        </div>
+
+        <!-- Screens Builder -->
+        <div class="builder-section">
+          <div class="builder-title-row">
+            <div>
+              <h3>Key Screens & Layouts</h3>
+              <p class="builder-subtitle">Define the primary visual views or pages making up the system.</p>
+            </div>
+          </div>
+
+          <div class="inline-add-row card-glass">
+            <div class="input-col-main">
+              <input type="text" id="screen-name-input" placeholder="Screen/View name (e.g., Dashboard, Landing Page, Settings)">
+              <input type="text" id="screen-desc-input" placeholder="What does this screen display or allow the user to do?">
+            </div>
+            <div class="input-col-side-single">
+              <button type="button" id="add-screen-btn" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Add Screen
+              </button>
+            </div>
+          </div>
+          <div id="screens-list-error" class="validation-error-text" style="display: none;">Please add at least one screen definition.</div>
+
+          <div class="list-display-container" id="screens-display-list">
+            <!-- Dynamically populated screens -->
+            <div class="empty-state-list">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>No screen layouts added yet. Define a key screen above!</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4: Success Criteria -->
+      <section class="step-panel" id="step-panel-4">
+        <div class="panel-header">
+          <div class="panel-badge">Step 4 of 5</div>
+          <h2>Success Criteria & Validation</h2>
+          <p class="panel-sub">Specify how you will define victory. List metrics, KPIs, and quality standards.</p>
+        </div>
+
+        <!-- Metrics Builder -->
+        <div class="builder-section">
+          <div class="builder-title-row">
+            <div>
+              <h3>KPIs & Target Metrics</h3>
+              <p class="builder-subtitle">Define quantitative indicators to measure the project's success.</p>
+            </div>
+          </div>
+
+          <div class="inline-add-row card-glass">
+            <div class="input-col-main">
+              <input type="text" id="metric-name-input" placeholder="Metric (e.g., Conversion Rate, Delivery Time, System Uptime)">
+              <input type="text" id="metric-target-input" placeholder="Target/Standard (e.g., > 99.9% uptime, under 2 seconds, 15% increase)">
+            </div>
+            <div class="input-col-side-single">
+              <button type="button" id="add-metric-btn" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Add Metric
+              </button>
+            </div>
+          </div>
+          <div id="metrics-list-error" class="validation-error-text" style="display: none;">Please add at least one success metric.</div>
+
+          <div class="list-display-container" id="metrics-display-list">
+            <!-- Dynamically populated metrics -->
+            <div class="empty-state-list">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>No success metrics added yet. Define a metric above!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quality Criteria Checklist -->
+        <div class="builder-section">
+          <div class="builder-title-row">
+            <div>
+              <h3>Quality Standards / Definition of Done</h3>
+              <p class="builder-subtitle">Check off the general requirements that this application must adhere to.</p>
+            </div>
+          </div>
+
+          <div class="quality-checkbox-grid">
+            <label class="checkbox-card">
+              <input type="checkbox" name="qualityStandards" value="Mobile Responsiveness" checked>
+              <div class="checkbox-content">
+                <div class="checkbox-title">Mobile Responsiveness</div>
+                <div class="checkbox-desc">Layout fits and works correctly on tablets and mobile screens.</div>
+              </div>
+            </label>
+
+            <label class="checkbox-card">
+              <input type="checkbox" name="qualityStandards" value="Accessibility Compliance (WCAG)" checked>
+              <div class="checkbox-content">
+                <div class="checkbox-title">Accessibility (WCAG)</div>
+                <div class="checkbox-desc">Meets AA contrast levels and standard screen-reader requirements.</div>
+              </div>
+            </label>
+
+            <label class="checkbox-card">
+              <input type="checkbox" name="qualityStandards" value="Performance Optimization">
+              <div class="checkbox-content">
+                <div class="checkbox-title">Fast Performance</div>
+                <div class="checkbox-desc">Optimized initial page loads (e.g., Lighthouse scores > 90).</div>
+              </div>
+            </label>
+
+            <label class="checkbox-card">
+              <input type="checkbox" name="qualityStandards" value="Secure User Data Handling" checked>
+              <div class="checkbox-content">
+                <div class="checkbox-title">Data Privacy & Security</div>
+                <div class="checkbox-desc">Sensitive credentials and tokens are encrypted and secured.</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5: Project Summary & Document Output -->
+      <section class="step-panel" id="step-panel-5">
+        <div class="panel-header">
+          <div class="panel-badge">Step 5 of 5</div>
+          <h2>Summary & Generation</h2>
+          <p class="panel-sub">Provide a short overall narrative summary, review your compiled requirements, and export your BRD.</p>
+        </div>
+
+        <div class="form-group">
+          <div class="label-wrapper">
+            <label for="project-summary">Executive Project Summary <span class="required">*</span></label>
+            <span class="input-helper">Provide a quick elevator pitch (1-3 sentences) summarizing the scope and impact.</span>
+          </div>
+          <textarea id="project-summary" name="projectSummary" rows="4" placeholder="E.g., 'Nexus is an elegant order-tracking solution designed to replace spreadsheets for SMB operations. By compiling disjointed databases into a unified, real-time interface, it accelerates delivery timelines, secures client records, and guarantees standard performance metrics.'"></textarea>
+          <div class="character-counter"><span id="summary-char-count">0</span> / 500 characters</div>
+        </div>
+
+        <div class="brd-output-container">
+          <div class="output-header-row">
+            <h3>Compiled Document Preview</h3>
+            <div class="output-action-group">
+              <button type="button" id="copy-markdown-btn" class="btn btn-outline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy Markdown
+              </button>
+              <button type="button" id="download-markdown-btn" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download MD
+              </button>
+              <button type="button" id="print-pdf-btn" class="btn btn-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Print to PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- Document Render Area -->
+          <div class="compiled-document-box" id="document-preview-box">
+            <!-- Rendered document will be loaded here dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Form Navigation -->
+      <footer class="form-navigation">
+        <button type="button" id="prev-btn" class="btn btn-outline" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Previous Step
+        </button>
+        <div class="step-indicator-dot-group" id="dot-navigation-group">
+          <!-- Dots will be populated by JS -->
+        </div>
+        <button type="button" id="next-btn" class="btn btn-primary">
+          Next Step
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </footer>
+
+    </form>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">
+    <span id="toast-message">Success! Settings auto-saved.</span>
+  </div>
+
+  <!-- Print template container (Invisible on screen, styled with display: none except on @media print) -->
+  <div id="print-document-container" class="print-document-container"></div>
+
+  <!-- Main JavaScript App -->
+  <script src="app.js"></script>
+</body>
+</html>
